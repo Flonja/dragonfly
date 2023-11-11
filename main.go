@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/df-mc/dragonfly/server"
+	"github.com/df-mc/dragonfly/server/item"
+	"github.com/df-mc/dragonfly/server/player"
 	"github.com/df-mc/dragonfly/server/player/chat"
 	"github.com/pelletier/go-toml"
 	"github.com/sirupsen/logrus"
@@ -25,7 +27,12 @@ func main() {
 	srv.CloseOnProgramEnd()
 
 	srv.Listen()
-	for srv.Accept(nil) {
+	for srv.Accept(func(p *player.Player) {
+		p.Inventory().Clear()
+		p.Inventory().AddItem(item.NewStack(item.Crossbow{}, 1))
+		p.Inventory().AddItem(item.NewStack(item.Crossbow{Item: item.NewStack(item.Arrow{}, 1)}, 1))
+		p.Inventory().AddItem(item.NewStack(item.Crossbow{Item: item.NewStack(item.Firework{}, 1)}, 1))
+	}) {
 	}
 }
 
